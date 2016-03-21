@@ -61,7 +61,14 @@ setup(
     packages=find_packages(),
     entry_points={
         'console_scripts': [
-            'benzo = benzo.cmdline:main'
+            'benzo=benzo.cmdline:main'
         ],
+        'benzo_templates': [
+            'urbanairship.push=benzo.templates.urbanairship.push:Template'
+        ],
+        'benzo_formatters': [
+            'yaml=benzo.formatters.yaml:Formatter',
+            'json=benzo.formatters.json:Formatter',
+        ]
     },
 )
