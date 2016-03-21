@@ -64,6 +64,7 @@ setup(
             'benzo=benzo.cmdline:main'
         ],
         'benzo_templates': [
+            'default=benzo.template:Base',
             'urbanairship.push=benzo.templates.urbanairship.push:Template'
         ],
         'benzo_formatters': [

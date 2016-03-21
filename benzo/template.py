@@ -1,3 +1,4 @@
+import base64
 from collections import OrderedDict
 import json
 import pkg_resources
@@ -5,14 +6,19 @@ import pprint
 
 import requests
 
+from . import exceptions
+
 
 class Base(object):
     FIELD_NAMES = {}
 
+    def get_session(self):
+        return requests.Session()
+
     def get_fields(self):
         return OrderedDict([
+            ('Method', {'default': 'POST'}, ),
             ('URL', {}, ),
-            ('METHOD', {'default': 'POST'}, ),
         ])
 
     def get_default_field_value(self, field_name):
@@ -41,7 +47,15 @@ class Base(object):
         return fields['URL']
 
     def get_request_method(self, fields):
-        return fields['METHOD']
+        return fields['Method']
+
+    def add_basic_authorization_header(self, headers, username, password):
+        headers['Authorization'] = 'Basic ' + base64.b64encode(
+            u'{username}:{password}'.format(
+                username=username,
+                password=password,
+            ).encode('utf8')
+        )
 
     def get_request_headers(self, fields, headers):
         return headers
@@ -49,8 +63,8 @@ class Base(object):
     def get_request_body(self, fields, body):
         return body
 
-    def dispatch_request(self, fields, headers, body):
-        result = requests.request(
+    def get_request_result(self, session, fields, headers, body):
+        return session.request(
             self.get_request_method(fields),
             self.get_request_url(fields),
             headers=self.get_request_headers(fields, headers),
@@ -58,9 +72,20 @@ class Base(object):
                 self.get_request_body(fields, body)
             ),
         )
-        result.raise_for_status()
 
-        return pprint.pformat(result.json(), indent=4)
+    def dispatch_request(self, session, fields, headers, body):
+        result = self.get_request_result(session, fields, headers, body)
+
+        if not result.ok:
+            raise exceptions.RequestFailed(
+                result.text,
+                result,
+                fields,
+                headers,
+                body,
+            )
+
+        return result, pprint.pformat(result.json(), indent=4)
 
 
 def get_installed_templates():

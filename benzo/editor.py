@@ -4,9 +4,29 @@ import subprocess
 import os
 import tempfile
 
+from . import sessions
+from .template import get_installed_templates
+from .formatter import get_installed_formatters
 
-def benzo_request(template, formatter):
-    base_template = get_base_template(template, formatter)
+
+def benzo_request(template_name, formatter_name, session_path=None):
+    all_templates = get_installed_templates()
+    all_formatters = get_installed_formatters()
+
+    if session_path is not None and os.path.exists(session_path):
+        session_data = sessions.read_session(session_path)
+
+        template = session_data['template']
+        formatter = session_data['formatter']
+
+        base_template = session_data['base_template']
+        session = session_data['session']
+    else:
+        template = all_templates[template_name]()
+        formatter = all_formatters[formatter_name]()
+
+        base_template = get_base_template(template, formatter)
+        session = template.get_session()
 
     with tempfile.NamedTemporaryFile(
         suffix=formatter.get_extension()
@@ -19,11 +39,20 @@ def benzo_request(template, formatter):
         out.seek(0)
         contents = out.read()
 
+        if session_path:
+            sessions.write_session(
+                session_path,
+                {
+                    'template': template,
+                    'formatter': formatter,
+                    'base_template': contents,
+                    'session': session,
+                }
+            )
+
     fields, headers, body = parse_contents(contents, formatter)
 
-    response = template.dispatch_request(fields, headers, body)
-
-    print(response.content)
+    return template.dispatch_request(session, fields, headers, body)
 
 
 def get_base_template(template, formatter):
