@@ -1,5 +1,8 @@
 from collections import OrderedDict
+import json
 import pkg_resources
+
+import requests
 
 
 class Base(object):
@@ -8,13 +11,12 @@ class Base(object):
     def get_fields(self):
         return OrderedDict([
             ('URL', {}, ),
-            ('PORT', {}, ),
             ('METHOD', {'default': 'POST'}, ),
         ])
 
     def get_default_field_value(self, field_name):
         fields = self.get_fields()
-        
+
         default = fields.get(field_name, {}).get('default')
         if default is not None:
             return default
@@ -33,6 +35,31 @@ class Base(object):
 
     def get_template(self):
         return {}
+
+    def get_request_url(self, fields):
+        return fields['URL']
+
+    def get_request_method(self, fields):
+        return fields['METHOD']
+
+    def get_request_headers(self, fields, headers):
+        return headers
+
+    def get_request_body(self, fields, body):
+        return body
+
+    def dispatch_request(self, fields, headers, body):
+        result = requests.request(
+            self.get_request_method(fields),
+            self.get_request_url(fields),
+            headers=self.get_request_headers(fields, headers),
+            data=json.dumps(
+                self.get_request_body(fields, body)
+            ),
+        )
+        result.raise_for_status()
+
+        return result.json()
 
 
 def get_installed_templates():

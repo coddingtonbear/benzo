@@ -21,7 +21,9 @@ def benzo_request(template, formatter):
 
     fields, headers, body = parse_contents(contents, formatter)
 
-    ## @TODO: convert the received fields, headers, and body into a request
+    response = template.dispatch_request(fields, headers, body)
+
+    print(response.content)
 
 
 def get_base_template(template, formatter):
