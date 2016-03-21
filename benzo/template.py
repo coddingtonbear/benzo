@@ -1,6 +1,7 @@
 from collections import OrderedDict
 import json
 import pkg_resources
+import pprint
 
 import requests
 
@@ -59,7 +60,7 @@ class Base(object):
         )
         result.raise_for_status()
 
-        return result.json()
+        return pprint.pformat(result.json(), indent=4)
 
 
 def get_installed_templates():
