@@ -19,8 +19,8 @@ def main():
 
     parser = argparse.ArgumentParser()
     parser.add_argument(
-        'template',
-        nargs='?',
+        '--template',
+        dest='template',
         default=None,
         choices=all_templates.keys(),
     )
