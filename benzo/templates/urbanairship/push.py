@@ -4,7 +4,7 @@ from benzo.template import Base
 
 
 class Template(Base):
-    API_KEY = 'Urban Airship API Key'
+    APP_KEY = 'Urban Airship App Key'
     MASTER_SECRET = 'Urban Airship Master Secret'
     OUTPUT_FORMATTER = 'json'
 
@@ -23,11 +23,11 @@ class Template(Base):
                     },
                 ),
                 (
-                    self.API_KEY,
+                    self.APP_KEY,
                     {
                         'default': self.get_config_value(
                             'urbanairship',
-                            'api_key',
+                            'app_key',
                         ),
                     },
                 ),
@@ -48,7 +48,7 @@ class Template(Base):
     def get_request_headers(self, fields, headers):
         headers = super(Template, self).get_request_headers(fields, headers)
         self.add_basic_authorization_header(
-            headers, fields[self.API_KEY], fields[self.MASTER_SECRET],
+            headers, fields[self.APP_KEY], fields[self.MASTER_SECRET],
         )
         return headers
 
