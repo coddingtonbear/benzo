@@ -84,6 +84,14 @@ def main():
             )
         )
         exit_code = 2
+    except exceptions.RequestAborted as e:
+        print(
+            u"{t.bold}{t.red}Request aborted:{t.normal} "
+            "{t.red}Empty editor.{t.normal}".format(
+                t=terminal,
+            )
+        )
+        exit_code = 3
     except Exception as e:
         print(
             u"{t.bold}{t.red}Unhandled exception occurred:{t.normal} "

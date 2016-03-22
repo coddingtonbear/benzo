@@ -4,7 +4,7 @@ import subprocess
 import os
 import tempfile
 
-from . import sessions
+from . import exceptions, sessions
 from .template import get_installed_templates
 from .formatter import get_installed_formatters
 
@@ -38,6 +38,9 @@ def benzo_request(template_name, formatter_name, session_path=None):
 
         out.seek(0)
         contents = out.read()
+
+        if not contents.strip():
+            raise exceptions.RequestAborted()
 
         if session_path:
             sessions.write_session(

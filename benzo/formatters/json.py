@@ -6,6 +6,7 @@ from benzo.formatter import Base
 
 
 class Formatter(Base):
+    COMMENT_CHAR = '//'
     CONTENT_TYPE = 'application/json'
 
     def to_string(self, value):
