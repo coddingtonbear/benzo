@@ -66,11 +66,11 @@ class Template(Base):
 
     def get_template(self):
         return {
-            'To': '',
             'From': self.get_config_value(
                 'twilio',
                 'default_from',
                 '',
             ),
+            'To': '',
             'Body': '',
         }
