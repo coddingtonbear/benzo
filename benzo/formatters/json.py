@@ -6,7 +6,7 @@ from benzo.formatter import Base
 
 
 class Formatter(Base):
-    CONTENT_TYPE = 'application/x-yaml'
+    CONTENT_TYPE = 'application/json'
 
     def to_string(self, value):
         if not value:

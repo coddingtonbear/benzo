@@ -5,12 +5,19 @@ import pprint
 
 import requests
 
-from . import exceptions, formatter, __version__
+from . import config, exceptions, formatter, __version__
 
 
 class Base(object):
     OUTPUT_FORMATTER = 'form'
     FIELD_NAMES = {}
+
+    def __init__(self):
+        self.config = config.get_config()
+        super(Base, self).__init__()
+
+    def get_config_value(self, section, field, default=None):
+        return self.config.get(section, {}).get(field, default)
 
     def get_session(self):
         return requests.Session()

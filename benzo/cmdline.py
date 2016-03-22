@@ -9,7 +9,7 @@ import traceback
 from blessings import Terminal
 import six
 
-from . import editor, exceptions, formatter, template
+from . import config, editor, exceptions, formatter, template
 
 
 def main():
@@ -61,13 +61,12 @@ def main():
             )
         )
 
-    default_template_name = os.environ.get(
-        'BENZO_DEFAULT_TEMPLATE',
-        'json'
+    conf = config.get_config()
+    default_template_name = (
+        conf.get('benzo', {}).get('default_template', 'json')
     )
-    default_formatter_name = os.environ.get(
-        'BENZO_DEFAULT_EDITOR_FORMAT',
-        'json',
+    default_formatter_name = (
+        conf.get('benzo', {}).get('default_editor_format', 'json')
     )
     try:
         result, response = editor.benzo_request(

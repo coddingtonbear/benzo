@@ -1,5 +1,4 @@
 from collections import OrderedDict
-import os
 
 from benzo.template import Base
 
@@ -16,8 +15,9 @@ class Template(Base):
                 (
                     'URL',
                     {
-                        'default': os.environ.get(
-                            'UA_PUSH_URL',
+                        'default': self.get_config_value(
+                            'urbanairship',
+                            'push_url',
                             'https://go.urbanairship.com/api/push/',
                         )
                     },
@@ -25,13 +25,19 @@ class Template(Base):
                 (
                     self.API_KEY,
                     {
-                        'default': os.environ.get('UA_API_KEY'),
+                        'default': self.get_config_value(
+                            'urbanairship',
+                            'api_key',
+                        ),
                     },
                 ),
                 (
                     self.MASTER_SECRET,
                     {
-                        'default': os.environ.get('UA_MASTER_SECRET'),
+                        'default': self.get_config_value(
+                            'urbanairship',
+                            'master_secret',
+                        ),
                     },
                 ),
             ])
