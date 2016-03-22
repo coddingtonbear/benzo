@@ -1,7 +1,7 @@
 Benzo
 =====
 
-Hand-craft your artisinal REST requests more easily.
+Hand-craft your artisanal REST requests more easily.
 
 Do you find yourself hand-crafting REST requests by opening up a python,
 ruby, or javascript repl, or hand-building a curl request?  Do you find
@@ -16,16 +16,16 @@ easy by providing a few features:
   define the content you'd like to send.
 * Simple and intuitive creating of requests.  Your request's contents
   and properties (like URL, request method, and headers) are displayed
-  in your default editor, and you can add, alter, or remove paramters
+  in your default editor, and you can add, alter, or remove parameters
   as you wish.
 * Separation of the API payload from the editor format. Although the API
   you're interacting with might demand form-encoded, JSON, or yaml values,
-  you can edit your request using a variety of formats, and benzo will
+  you can edit your request using a variety of formats, and Benzo will
   convert it to the proper format when dispatching your request.
 * Saveable sessions.  Do you ever build a request perfectly the first
   time?  Me neither.  Iterate quickly and easily on your request by
-  using benzo's sessions.  If first you do not succeed, just re-run
-  benzo in the same session, and the editor will be opened just as you
+  using Benzo's sessions.  If first you do not succeed, just re-run
+  Benzo in the same session, and the editor will be opened just as you
   last left it.
 
 Installation
@@ -101,7 +101,7 @@ Request templates will usually contain a list of extra headers displayed
 near the top of your editor as comments starting with the proword
 ``[Header]``.  You can alter or add additional headers at-will; just make
 sure to keep the proword ``[Header]`` at the beginning of the line so
-benzo knows which lines to interpret as headers.
+Benzo knows which lines to interpret as headers.
 
 Cancelling
 ++++++++++
@@ -113,7 +113,7 @@ Configuration
 -------------
 
 You do not need to provide any special configuration details, but you can
-fine-tune the behavior of benzo by adding configuration settings to your
+fine-tune the behavior of Benzo by adding configuration settings to your
 ``~/.benzo`` file's ``[benzo]`` section.
 
 * ``default_editor_format``: Which format would you like to use for building
