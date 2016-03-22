@@ -1,15 +1,15 @@
 import base64
 from collections import OrderedDict
-import json
 import pkg_resources
 import pprint
 
 import requests
 
-from . import exceptions
+from . import exceptions, formatter, __version__
 
 
 class Base(object):
+    OUTPUT_FORMATTER = 'form'
     FIELD_NAMES = {}
 
     def get_session(self):
@@ -31,8 +31,14 @@ class Base(object):
         return u''
 
     def get_headers(self):
+        formatter = self.get_output_formatter()
+
         return {
-            'Content-Type': 'application/json',
+            'Content-Type': formatter.CONTENT_TYPE,
+            'User-Agent': 'benzo/{benzo} python-requests/{requests}'.format(
+                benzo=__version__,
+                requests=requests.__version__,
+            )
         }
 
     def get_default_header_value(self, header_name):
@@ -41,7 +47,7 @@ class Base(object):
         return headers.get(header_name, '')
 
     def get_template(self):
-        return {}
+        return None
 
     def get_request_url(self, fields):
         return fields['URL']
@@ -57,20 +63,28 @@ class Base(object):
             ).encode('utf8')
         )
 
+    def get_output_formatter(self):
+        all_formatters = formatter.get_installed_formatters()
+
+        return all_formatters[self.OUTPUT_FORMATTER or 'json']()
+
     def get_request_headers(self, fields, headers):
         return headers
 
     def get_request_body(self, fields, body):
         return body
 
+    def get_request_data(self, data):
+        formatter = self.get_output_formatter()
+
+        return formatter.to_string(data)
+
     def get_request_result(self, session, fields, headers, body):
         return session.request(
             self.get_request_method(fields),
             self.get_request_url(fields),
             headers=self.get_request_headers(fields, headers),
-            data=json.dumps(
-                self.get_request_body(fields, body)
-            ),
+            data=self.get_request_data(self.get_request_body(fields, body)),
         )
 
     def dispatch_request(self, session, fields, headers, body):
@@ -85,7 +99,12 @@ class Base(object):
                 body,
             )
 
-        return result, pprint.pformat(result.json(), indent=4)
+        try:
+            result_content = result.json()
+        except ValueError:
+            result_content = result.text
+
+        return result, pprint.pformat(result_content, indent=4)
 
 
 def get_installed_templates():

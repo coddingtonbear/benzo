@@ -3,6 +3,7 @@ from __future__ import print_function
 import argparse
 import sys
 import os
+import pdb
 import traceback
 
 from blessings import Terminal
@@ -37,8 +38,16 @@ def main():
         default=None,
         choices=all_formatters.keys()
     )
+    parser.add_argument(
+        '--debugger',
+        '-d',
+        dest='debugger',
+        default=False,
+        action='store_true',
+    )
     args = parser.parse_args()
 
+    exit_code = 0
     if args.session_path and os.path.exists(args.session_path):
         if args.template or args.editor_format:
             parser.error(
@@ -52,10 +61,18 @@ def main():
             )
         )
 
+    default_template_name = os.environ.get(
+        'BENZO_DEFAULT_TEMPLATE',
+        'json'
+    )
+    default_formatter_name = os.environ.get(
+        'BENZO_DEFAULT_EDITOR_FORMAT',
+        'json',
+    )
     try:
         result, response = editor.benzo_request(
-            template_name=args.template or 'default',
-            formatter_name=args.editor_format or 'json',
+            template_name=args.template or default_template_name,
+            formatter_name=args.editor_format or default_formatter_name,
             session_path=args.session_path,
         )
     except exceptions.RequestFailed as e:
@@ -67,7 +84,7 @@ def main():
                 message=six.text_type(e)
             )
         )
-        sys.exit(2)
+        exit_code = 2
     except Exception as e:
         print(
             u"{t.bold}{t.red}Unhandled exception occurred:{t.normal} "
@@ -78,11 +95,16 @@ def main():
                 traceback=traceback.format_exc()
             )
         )
-        sys.exit(1)
+        exit_code = 1
     else:
         print(
             u"{t.green}{message}{t.normal}".format(
                 t=terminal,
-                message=response.content,
+                message=response,
             )
         )
+
+    if args.debugger:
+        pdb.set_trace()
+
+    sys.exit(exit_code)

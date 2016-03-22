@@ -57,19 +57,22 @@ setup(
     ],
     install_requires=requirements,
     tests_require=['tox', ],
-    cmdclass = {'test': Tox},
+    cmdclass={'test': Tox},
     packages=find_packages(),
     entry_points={
         'console_scripts': [
             'benzo=benzo.cmdline:main'
         ],
         'benzo_templates': [
-            'default=benzo.template:Base',
+            'form=benzo.templates.default.form:Template',
+            'json=benzo.templates.default.json:Template',
+            'yaml=benzo.templates.default.yaml:Template',
             'urbanairship.push=benzo.templates.urbanairship.push:Template'
         ],
         'benzo_formatters': [
             'yaml=benzo.formatters.yaml:Formatter',
             'json=benzo.formatters.json:Formatter',
+            'form=benzo.formatters.form:Formatter',
         ]
     },
 )

@@ -7,6 +7,7 @@ from benzo.template import Base
 class Template(Base):
     API_KEY = 'Urban Airship API Key'
     MASTER_SECRET = 'Urban Airship Master Secret'
+    OUTPUT_FORMATTER = 'json'
 
     def get_fields(self):
         fields = super(Template, self).get_fields()

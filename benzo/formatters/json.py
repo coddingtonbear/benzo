@@ -6,7 +6,12 @@ from benzo.formatter import Base
 
 
 class Formatter(Base):
+    CONTENT_TYPE = 'application/x-yaml'
+
     def to_string(self, value):
+        if not value:
+            return ''
+
         return json.dumps(
             value,
             indent=4,
@@ -17,4 +22,7 @@ class Formatter(Base):
         return '.json'
 
     def to_python(self, value):
+        if not value.strip():
+            return None
+
         return json.loads(value)
