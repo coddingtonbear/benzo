@@ -67,6 +67,7 @@ setup(
             'form=benzo.templates.default.form:Template',
             'json=benzo.templates.default.json:Template',
             'yaml=benzo.templates.default.yaml:Template',
+            'twilio.sms=benzo.templates.twilio.sms:Template',
             'urbanairship.push=benzo.templates.urbanairship.push:Template'
         ],
         'benzo_formatters': [
